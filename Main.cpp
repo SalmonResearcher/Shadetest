@@ -78,6 +78,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	//DirectInput‚Ì‰Šú‰»
 	Input::Initialize(hWnd);
 
+	//rootjob syokika
 	pRootJob = new RootJob(nullptr);
 	pRootJob->Initialize();
 
@@ -120,11 +121,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			}
 			lastUpdateTime = nowTime;
 
-
 			countFps++;
-
-
-
 
 			timeEndPeriod(1);
 

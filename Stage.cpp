@@ -1,5 +1,6 @@
 #include "Stage.h"
 #include "Engine/Model.h"
+#include "Engine/Input.h"
 
 //コンストラクタ
 Stage::Stage(GameObject* parent)
@@ -23,14 +24,18 @@ void Stage::Initialize()
     hModel_ = Model::Load("assets/BoxDefault.fbx");
     assert(hModel_ >= 0);
 }
-
+float speed = 1;
 //更新
 void Stage::Update()
 {
     time++;
+    
     float rotate = sin((DOUBLE)time /20);
     rotate = rotate / 5;
-    Block.rotate_.y += 1;
+    Block.rotate_.y += speed;
+    if (Input::IsKey(DIK_LEFT))
+        speed = speed +0.2;
+
     Block.position_.y = rotate;
 }
 
