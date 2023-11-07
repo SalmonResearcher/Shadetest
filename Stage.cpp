@@ -28,7 +28,6 @@ void Stage::Initialize()
 void Stage::Update()
 {
     Block.rotate_.y += 1;
-    Block.position_.y =
 }
 
 //•`‰æ
