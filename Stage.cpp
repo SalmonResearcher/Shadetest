@@ -27,7 +27,11 @@ void Stage::Initialize()
 //çXêV
 void Stage::Update()
 {
+    time++;
+    float rotate = sin((DOUBLE)time /20);
+    rotate = rotate / 5;
     Block.rotate_.y += 1;
+    Block.position_.y = rotate;
 }
 
 //ï`âÊ
