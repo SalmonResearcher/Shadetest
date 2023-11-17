@@ -1,12 +1,16 @@
 #pragma once
 #include "Engine/GameObject.h"
 
+class Sprite;
+
 //◆◆◆を管理するクラス
 class Stage : public GameObject
 {
     int hModel_;    //モデル番号
     Transform Block;
     int time;
+    Sprite* pSprite = nullptr;
+
 public:
     //コンストラクタ
     Stage(GameObject* parent);
