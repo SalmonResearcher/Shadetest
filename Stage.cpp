@@ -28,6 +28,7 @@ void Stage::Initialize()
 }
 float speed = 1;
 //XV
+
 void Stage::Update()
 {
     
