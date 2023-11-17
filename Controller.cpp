@@ -110,7 +110,7 @@ void Controller::Update()
 	XMStoreFloat3(&transform_.position_, nowVec);
 
 	//カメラ本体
-	XMVECTOR vCam = { 0,5,-15,0 };
+	XMVECTOR vCam = { 0,0,-10,0 };
 
 	//カメラ注視点
 	Camera::SetTarget(transform_.position_);
