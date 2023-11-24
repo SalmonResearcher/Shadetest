@@ -34,7 +34,7 @@ void Controller::Update()
 		transform_.rotate_.y -= 1;
 	}
 
-	if (Input::IsKey(DIK_F))
+	if (Input::IsKey(DIK_C))
 	{
 		//“àÏ‚ğæ‚Á‚Ä‚È‚¢
 		transform_.rotate_.x += 1;
@@ -44,7 +44,7 @@ void Controller::Update()
 		}
 	}
 
-	if (Input::IsKey(DIK_C))
+	if (Input::IsKey(DIK_F))
 	{
 		//“àÏ‚ğ‚Æ‚Á‚Ä‚È‚¢
 		transform_.rotate_.x -= 1;
