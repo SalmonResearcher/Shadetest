@@ -16,7 +16,6 @@
 const char* WIN_CLASS_NAME = "SampleGame";  //ウィンドウクラス名
 const int WINDOW_WIDTH = 800;  //ウィンドウの幅
 const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
-
 RootJob* pRootJob = nullptr;
 
 //プロトタイプ宣言
@@ -108,6 +107,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	ZeroMemory(&msg, sizeof(msg));
 	while (msg.message != WM_QUIT)
 	{
+
 		//メッセージあり
 		if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 		{
@@ -118,6 +118,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		//メッセージなし
 		else
 		{
+			ImGui_ImplDX11_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+
+
 			timeBeginPeriod(1);
 
 			static DWORD countFps = 0;
@@ -157,6 +162,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			ImGui::Render();
 			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
+			//描画処理の前に記述
+			ImGui::Render();
+			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+
 			//▼描画
 			Direct3D::BeginDraw();
 
@@ -181,6 +191,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	return 0;
 }
 
+//ウィンドウプロシージャの前に記述
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 //ウィンドウプロシージャ（何かあった時によばれる関数）
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -190,5 +203,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);  //プログラム終了
 		return 0;
 	}
+
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;
+
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
