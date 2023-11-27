@@ -7,6 +7,9 @@
 #include "Engine/RootJob.h"
 #include "Engine/Model.h"
 
+#include "Graphics/ImGui/imgui_impl_dx11.h"
+#include "Graphics/ImGui/imgui_impl_win32.h"
+
 #pragma comment(lib, "winmm.lib")
 
 //定数宣言
@@ -72,6 +75,23 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		PostQuitMessage(0); //エラー起きたら強制終了
 	}
 
+	{//GUI初期化
+#if _DEBUG
+		//IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		ImFontConfig config;
+		config.MergeMode = true;
+		io.Fonts->AddFontDefault();
+		io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+		ImGui::StyleColorsDark();
+		ImGui_ImplWin32_Init(hWnd);
+		ImGui_ImplDX11_Init(Direct3D::pDevice_, Direct3D::pContext_);
+		ImGui::SetNextWindowSize(ImVec2(320, 100));
+#endif
+	}
+
+
 	//カメラの初期化
 	Camera::Initialize();
 
@@ -133,6 +153,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			Input::Update();
 			pRootJob->UpdateSub();
 
+			//描画の前にImGuiを
+			ImGui::Render();
+			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
 			//▼描画
 			Direct3D::BeginDraw();
 
@@ -149,6 +173,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 	Input::Release();
 	Direct3D::Release();
+
+	//解放処理
+	ImGui_ImplDX11_Shutdown();
+	ImGui::DestroyContext();
 
 	return 0;
 }
