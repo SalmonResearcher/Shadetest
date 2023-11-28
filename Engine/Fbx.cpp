@@ -115,8 +115,6 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 	}
 }
 
-
-
 //インデックスバッファ準備
 void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
 {
@@ -254,6 +252,7 @@ void Fbx::Draw(Transform& transform)
 		cb.lightDirection = LIGHT_DIRECTION;
 		cb.eyePos = Camera::GetEyePosition();
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
+
 	
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
