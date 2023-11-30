@@ -18,6 +18,9 @@
     <Filter Include="ヘッダーファイル\Engine">
       <UniqueIdentifier>{781800bf-0886-4a69-a355-7df3c6979e71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ToyBox">
+      <UniqueIdentifier>{4990e02f-b389-4aa9-b0f6-13a463573bf6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -56,9 +59,6 @@
     <ClCompile Include="Engine\Model.cpp">
       <Filter>ソース ファイル\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="TestScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\SceneManager.cpp">
       <Filter>ソース ファイル\Engine</Filter>
     </ClCompile>
@@ -66,10 +66,16 @@
       <Filter>ソース ファイル\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Stage.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ToyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>ToyBox</Filter>
     </ClCompile>
     <ClCompile Include="Controller.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ToyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ToyBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -119,14 +125,17 @@
     <ClInclude Include="Engine\SphereCollider.h">
       <Filter>ヘッダーファイル\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="TestScene.h">
-      <Filter>ヘッダーファイル</Filter>
+    <ClInclude Include="Controller.h">
+      <Filter>ToyBox</Filter>
     </ClInclude>
     <ClInclude Include="Stage.h">
-      <Filter>ヘッダーファイル</Filter>
+      <Filter>ToyBox</Filter>
     </ClInclude>
-    <ClInclude Include="Controller.h">
-      <Filter>ヘッダーファイル</Filter>
+    <ClInclude Include="TestScene.h">
+      <Filter>ToyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ToyBox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

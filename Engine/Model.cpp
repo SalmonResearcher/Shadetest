@@ -3,26 +3,27 @@
 
 namespace Model {
 
-	//モデルのポインタをぶち込んでおくベクタ
+	//ロードしたモデルデータの一覧
 	std::vector<ModelData*> modelList;
 }
 
 int Model::Load(std::string fileName)
 {
-	ModelData* pData;
-	pData = new ModelData;
+	ModelData* pData = new ModelData;
 	pData->filename_ = fileName;
 	pData->pfbx_ = nullptr;
 
-	//ファイルネームが同じだったら、読まん！
-	for (auto& e : modelList)
+	//モデルのリストを0から見て
+	for (auto& itr : modelList)
 	{
-		if (e->filename_ == fileName) {
-			pData->pfbx_ = e->pfbx_;
+		//既に開いたファイルの場合
+		if (itr->filename_ == fileName) {
+			pData->pfbx_ = itr->pfbx_;
 			break;
 		}
 	}
 
+	//新たにファイルを開く
 	if (pData->pfbx_ == nullptr)
 	{
 		pData->pfbx_ = new Fbx;
@@ -33,13 +34,28 @@ int Model::Load(std::string fileName)
 	return( modelList.size() - 1 );
 }
 
+void Model::SetAnimFrame(int handle, int startFrame, int endFrame, float animSpeed)
+{
+	modelList[handle].SetAnimFrame()
+}
+
+int Model::GetAnimFrame(int handle)
+{
+	return 0;
+}
+
+XMFLOAT3 Model::GetBonePosition(int handle, std::string boneName)
+{
+	return XMFLOAT3();
+}
+
 void Model::SetTransform(int hModel, Transform transform)
 {
+	//モデル番号はmodelListのインデックス
 	modelList[hModel]->transform_ = transform;
-	//モデル番号は、modelListのインデックス
 }
 void Model::Draw(int hModel) {
-	//モデル番号は、modelListのインデックス
+	//モデル番号はmodelListのインデックス
 	modelList[hModel]->pfbx_->Draw(modelList[hModel]->transform_);
 }
 
