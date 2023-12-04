@@ -4,6 +4,11 @@
 #include "Camera.h"
 #include "Texture.h"
 
+namespace
+{
+	const XMFLOAT4 LIGHT_DIRECTION = { 2.0f,5.0f,-1.0f ,0.0f};
+}
+
 Fbx::Fbx()
 	:vertexCount_(0), polygonCount_(0), materialCount_(0),
 	pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr),
@@ -109,8 +114,6 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 		MessageBox(NULL, "頂点バッファの作成に失敗しました", "エラー", MB_OK);
 	}
 }
-
-
 
 //インデックスバッファ準備
 void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
@@ -271,7 +274,14 @@ void Fbx::Draw(Transform& transform)
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
+		cb.lightDirection = LIGHT_DIRECTION;
+		cb.eyePos = Camera::GetEyePosition();
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
+
+		//光源ベクトルの逆-Lに面から正反射ベクトルRまでの距離Dを足す
+		//ために必要なDを求めるとDは法線ベクトルNと光源ベクトルLの内積
+		//D = N *(N ・ L)
+
 	
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める

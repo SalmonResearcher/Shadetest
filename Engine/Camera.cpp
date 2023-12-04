@@ -48,6 +48,12 @@ void Camera::SetTarget(XMFLOAT3 target)
 	SetTarget(XMLoadFloat3(&target));
 }
 
+//カメラ座標を取得
+XMVECTOR Camera::GetEyePosition()
+{
+	return position_;
+}
+
 //ビュー行列を取得
 XMMATRIX Camera::GetViewMatrix()
 {

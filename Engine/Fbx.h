@@ -26,10 +26,14 @@ class Fbx
 
 	struct CONSTANT_BUFFER
 	{
-		XMMATRIX	matWVP;
-		XMMATRIX	matNormal;
-		XMFLOAT4	diffuseColor;
-		int			isTextured;
+		XMMATRIX	matWVP;			//wvp ワールドビュープロジェクション
+		XMMATRIX	matW;			//ｗ　ワールド座標変換のみのピクセルシェーダーに渡す用のもの
+		XMMATRIX	matNormal;		//スケール*平行移動の逆行列
+		XMFLOAT4	diffuseColor;	//Fbxからとってきた面の色
+		XMFLOAT4	lightDirection;
+		XMVECTOR	eyePos;
+		BOOL		isTextured;
+		//int			isTextured;
 	};
 
 	struct VERTEX
