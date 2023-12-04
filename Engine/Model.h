@@ -12,12 +12,32 @@ namespace Model
 		std::string filename_;
 
 		//ロードしたモデルのアドレス
-		Fbx* pfbx_;
+		Fbx* pFbx_;
 
 		//移動行列
 		Transform transform_;
 
-		//アニメーションのレート
+		//アニメーションのフレームレート
+		float nowFrame, animSpeed;
+		int startFrame, endFrame;
+
+		//初期化
+		ModelData() : pFbx_(nullptr), nowFrame(0), startFrame(0), endFrame(0), animSpeed(0)
+		{
+		}
+
+		//アニメーションのフレーム数をセット
+		//引数：startFrame	開始フレーム
+		//引数：endFrame	終了フレーム
+		//引数：animSpeed	アニメーション速度
+		void SetAnimFrame(int start, int end, float speed)
+		{
+			nowFrame = (float)start;
+			startFrame = start;
+			endFrame = end;
+			animSpeed = speed;
+		}
+
 	};
 
 	/// <summary>
@@ -35,7 +55,6 @@ namespace Model
 	/// <param name="endFrame">終了フレーム</param>
 	/// <param name="animSpeed">アニメーション速度</param>
 	void SetAnimFrame(int handle, int startFrame, int endFrame, float animSpeed);
-
 	/// <summary>
 	/// 現在のアニメーションのフレームを取得
 	/// </summary>

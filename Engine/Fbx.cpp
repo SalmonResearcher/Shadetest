@@ -233,6 +233,31 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 	}
 }
 
+/*void Fbx::Draw(Transform& transform, int frame)
+{
+	//パーツを1個ずつ描画
+	for (int k = 0; k < parts_.size(); k++)
+	{
+		// その瞬間の自分の姿勢行列を得る
+		FbxTime     time;
+		time.SetTime(0, 0, 0, frame, 0, 0, _frameRate);
+
+
+		//スキンアニメーション（ボーン有り）の場合
+		if (parts_[k]->GetSkinInfo() != nullptr)
+		{
+			parts_[k]->DrawSkinAnime(transform, time);
+		}
+
+		//メッシュアニメーションの場合
+		else
+		{
+			parts_[k]->DrawMeshAnime(transform, time, pFbxScene_);
+		}
+	}
+}*/
+
+
 void Fbx::Draw(Transform& transform)
 {
 	Direct3D::SetShader(SHADER_3D);
