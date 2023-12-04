@@ -1,11 +1,15 @@
 #include "Input.h"
 
+
 namespace Input
 {
 	LPDIRECTINPUT8   pDInput = nullptr;
 	LPDIRECTINPUTDEVICE8 pKeyDevice = nullptr;
 	BYTE keyState[256] = { 0 };
 	BYTE prevKeyState[256];    //前フレームでの各キーの状態
+	XMVECTOR mousePosition;		//マウスの位置
+	XMVECTOR curMousePos;		//前フレームのマウスの位置
+	XMFLOAT3 mouseMove;			//マウスが動いた料
 
 	void Initialize(HWND hWnd)
 	{
@@ -22,6 +26,7 @@ namespace Input
 
 		pKeyDevice->Acquire();
 		pKeyDevice->GetDeviceState(sizeof(keyState), &keyState);
+		curMousePos = mousePosition;
 	}
 
 	bool IsKey(int keyCode)
@@ -51,6 +56,22 @@ namespace Input
 			return true;
 		}
 		return false;
+	}
+
+	XMVECTOR GetMousePosition()
+	{
+		return mousePosition;
+	}
+
+	void SetMousePosition(int x, int y)
+	{
+		mousePosition = XMVectorSet((float)x, (float)y, 0, 0);
+	}
+
+	XMFLOAT3 MoveMouseRange()
+	{
+		XMStoreFloat3(&mouseMove, curMousePos - mousePosition);
+		return mouseMove;
 	}
 
 	void Release()

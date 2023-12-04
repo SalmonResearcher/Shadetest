@@ -23,6 +23,9 @@ void Controller::Initialize()
 //XV
 void Controller::Update()
 {
+	XMFLOAT3 move = Input::MoveMouseRange();
+
+
 	//‚±‚±‚©‚ç‰ñ“]‚³‚¹‚Ü‚·
 	if (Input::IsKey(DIK_Q))
 	{

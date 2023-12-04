@@ -64,10 +64,10 @@ void Model::Draw(int hModel) {
 
 
 
-	if (modelList[hModel]->pFbx_)
-	{
-		modelList[hModel]->pFbx_->Draw(modelList[hModel]->transform_, (int)modelList[hModel]->nowFrame);
-	}
+	//if (modelList[hModel]->pFbx_)
+	//{
+	//	modelList[hModel]->pFbx_->Draw(modelList[hModel]->transform_, (int)modelList[hModel]->nowFrame);
+	//}
 }
 
 void Model::Release()
