@@ -11,8 +11,11 @@ SamplerState	g_sampler : register(s0);	//サンプラー
 cbuffer global
 {
 	float4x4	matWVP;			// ワールド・ビュー・プロジェクションの合成行列
+	float4x4	matW;			//ワールド変換のみ行列
 	float4x4	matNormal;           // ワールド行列
 	float4		diffuseColor;		//マテリアルの色＝拡散反射係数
+	float4		lightDirection;		//Fbxより取得したのポリゴンの色
+	vector		eyePos;				//カメラの向いている方向
 	bool		isTextured;			//テクスチャーが貼られているかどうか
 };
 

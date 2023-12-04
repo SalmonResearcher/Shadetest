@@ -253,6 +253,10 @@ void Fbx::Draw(Transform& transform)
 		cb.eyePos = Camera::GetEyePosition();
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 
+		//光源ベクトルの逆-Lに面から正反射ベクトルRまでの距離Dを足す
+		//ために必要なDを求めるとDは法線ベクトルNと光源ベクトルLの内積
+		//D = N *(N ・ L)
+
 	
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める

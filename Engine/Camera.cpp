@@ -49,9 +49,9 @@ void Camera::SetTarget(XMFLOAT3 target)
 }
 
 //カメラ座標を取得
-XMMATRIX Camera::GetEyePosition()
+XMVECTOR Camera::GetEyePosition()
 {
-	return projMatrix_;
+	return position_;
 }
 
 //ビュー行列を取得
