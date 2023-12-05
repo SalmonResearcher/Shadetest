@@ -35,6 +35,7 @@ class Fbx
 		//int			isTextured;
 	};
 
+	//頂点バッファー
 	struct VERTEX
 	{
 		XMVECTOR position;//位置

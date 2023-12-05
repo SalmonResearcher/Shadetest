@@ -26,7 +26,7 @@ void Stage::Initialize()
     num++;
 
     //モデルデータのロード
-    hModel_[num] = Model::Load("assets/Ball.fbx");
+    hModel_[num] = Model::Load("assets/Ball0.fbx");
     assert(hModel_[num] >= 0);
 
     num++;
