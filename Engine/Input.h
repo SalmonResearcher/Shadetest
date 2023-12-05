@@ -16,7 +16,7 @@ namespace Input
 	//更新
 	void Update();
 
-	//押されているか
+	//キーボードのキーが押されているか
 	bool IsKey(int keyCode);
 
 	//押された瞬間か
@@ -25,9 +25,24 @@ namespace Input
 	//離されたか
 	bool IsKeyUp(int keyCode);
 
-	XMVECTOR GetMousePosition();
+	//マウスのボタンが押されているか
+	bool IsMouseButton(int buttonCode);
 
-	XMFLOAT3 MoveMouseRange();
+	//マウスのボタンが押されたか
+	bool IsMouseButtonDown(int buttonCode);
+
+	//マウスのボタンが離されたか
+	bool IsMouseButtonUp(int buttonCode);
+
+	//マウスの位置を取得
+	XMFLOAT3 GetMousePosition();
+
+	//マウスカーソルの位置をセット
+	void SetMousePosition(int x, int y);
+
+	//そのフレームのマウスの移動量を取得
+	//X,Y　マウスの移動量　Z,ホイールの回転量
+	XMFLOAT3 GetMouseMove();
 
 	void Release();
 };

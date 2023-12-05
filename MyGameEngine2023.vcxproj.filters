@@ -77,6 +77,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>ToyBox</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Debug.cpp">
+      <Filter>ソース ファイル\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Simple3D.hlsl" />
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>ToyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Debug.h">
+      <Filter>ヘッダーファイル\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
