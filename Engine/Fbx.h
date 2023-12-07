@@ -20,8 +20,18 @@ class Fbx
 	//マテリアル
 	struct MATERIAL
 	{
+		//テクスチャ
 		Texture* pTexture;
+		
+		//拡散反射
 		XMFLOAT4 diffuse;
+		
+		//鏡面反射
+		XMFLOAT4 specular;
+
+		//反射
+		float shininess;
+
 	};
 
 	struct CONSTANT_BUFFER
