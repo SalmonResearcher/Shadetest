@@ -2,6 +2,11 @@
 #include "Engine/Model.h"
 #include "Engine/Input.h"
 #include "Engine/Sprite.h"
+#include "Engine/Camera.h"
+
+namespace {
+    const XMFLOAT4 DEF_LIGHT_POS;
+}
 
 //コンストラクタ
 Stage::Stage(GameObject* parent)
@@ -9,6 +14,25 @@ Stage::Stage(GameObject* parent)
 {
     Block.position_.x = 0;
     Block.position_.z = 0;
+}
+
+void Stage::IntConstantBuffer()
+{
+    D3D11_BUFFER_DESC cb;
+    cb.ByteWidth = sizeof(CBUFF_STAGESCENE);
+    cb.Usage = D3D11_USAGE_DEFAULT;
+    cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    cb.MiscFlags = 0;
+    cb.StructureByteStride = 0;
+
+    // コンスタントバッファの作成
+    HRESULT hr;
+    hr = Direct3D::pDevice_->CreateBuffer(&cb, nullptr, &pCBStageScene_);
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, "コンスタントバッファの作成に失敗しました", "エラー", MB_OK);
+    }
 }
 
 //デストラクタ
@@ -24,32 +48,25 @@ void Stage::Initialize()
     assert(hModel_[num] >= 0);
 
     num++;
-
-    //モデルデータのロード
     hModel_[num] = Model::Load("assets/Ball0.fbx");
     assert(hModel_[num] >= 0);
 
     num++;
-
     hModel_[num] = Model::Load("assets/Arrow.fbx");
     assert(hModel_[num] >= 0);
 
     num++;
-
-    //モデルデータのロード
     hModel_[num] = Model::Load("assets/Arrow.fbx");
     assert(hModel_[num] >= 0);
 
     num++;
-
     hModel_[num] = Model::Load("assets/Arrow.fbx");
     assert(hModel_[num] >= 0);
-
-
-
 
     pSprite = new Sprite;
-    pSprite->Initialize();    
+    pSprite->Initialize();  
+    IntConstantBuffer();
+
 }
 float speed = 1;
 //更新
@@ -66,7 +83,51 @@ void Stage::Update()
         speed = speed +0.2;
 
     Block.position_.y = rotate+1.2;
-    
+
+   // XMFLOAT4 p = {0.0f,2.0f,-1.5f,0};
+   // XMFLOAT4 margin{ p.x - 0.0f,p.y - 0.0f,p.z - 0.1f,p. };
+    if (Input::IsKey(DIK_W))
+    {
+        XMFLOAT4 p = {0.0f,2.0f,-1.5f,0};
+        XMFLOAT4 margin{ p.x - 0.0f,p.y - 0.0f,p.z + 0.1f,p.w -0.0};
+
+        SetLightPosition(margin);
+    }
+
+    if (Input::IsKey(DIK_A))
+    {
+        XMFLOAT4 p = { 0.0f,2.0f,-1.5f,0 };
+        XMFLOAT4 margin{ p.x - 0.1f,p.y - 0.0f,p.z - 0.0f,p.w - 0.0 };
+
+        SetLightPosition(margin);
+    }
+
+    if (Input::IsKey(DIK_S))
+    {
+        XMFLOAT4 p = { 0.0f,2.0f,-1.5f,0 };
+        XMFLOAT4 margin{ p.x - 0.0f,p.y - 0.0f,p.z - 0.1f,p.w - 0.0 };
+
+        SetLightPosition(margin);
+    }
+
+    if (Input::IsKey(DIK_D))
+    {
+        XMFLOAT4 p = { 0.0f,2.0f,-1.5f,0 };
+        XMFLOAT4 margin{ p.x + 0.1f,p.y - 0.0f,p.z - 0.0f,p.w - 0.0 };
+
+        SetLightPosition(margin);
+    }
+    XMFLOAT4 tmp{ GetLightPos() };
+    Light.position_ = { tmp.x,tmp.y,tmp.z };
+
+
+    CBUFF_STAGESCENE cb;
+    cb.lightPosition = lightSourcePosition;
+    XMStoreFloat4(&cb.eyePos, Camera::GetEyePosition());
+
+    Direct3D::pContext_->UpdateSubresource(pCBStageScene_, 0, NULL, &cb, 0, 0);
+    Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pCBStageScene_);
+    Direct3D::pContext_->PSSetConstantBuffers(1, 1, &pCBStageScene_);
 }
 
 //描画

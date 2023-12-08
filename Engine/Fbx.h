@@ -19,17 +19,10 @@ class Fbx
 {
 	//マテリアル
 	struct MATERIAL
-	{
-		//テクスチャ
-		Texture* pTexture;
-		
-		//拡散反射
-		XMFLOAT4 diffuse;
-		
-		//鏡面反射
-		XMFLOAT4 specular;
-
-		//反射
+	{	
+		Texture* pTexture;		//テクスチャ
+		XMFLOAT4 diffuse;		//拡散反射
+		XMFLOAT4 specular;		//鏡面反射
 		float shininess;
 
 	};
@@ -39,8 +32,6 @@ class Fbx
 		XMMATRIX	matWVP;
 		XMMATRIX	matNormal;
 		XMFLOAT4	diffuseColor;
-		XMFLOAT4	lightDirection;
-		XMMATRIX	eyePos;
 		BOOL		isTextured;
 		//int			isTextured;
 	};
