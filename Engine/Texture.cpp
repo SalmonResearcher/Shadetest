@@ -60,7 +60,6 @@ HRESULT Texture::Load(string filename)
 		return S_FALSE;
 	}
 
-
     return S_OK;
 }
 

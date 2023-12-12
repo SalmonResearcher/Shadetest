@@ -4,10 +4,10 @@
 #include "Camera.h"
 #include "Texture.h"
 
-namespace
-{
-	const XMFLOAT4 LIGHT_DIRECTION = { 2.0f,5.0f,-1.0f ,0.0f};
-}
+using namespace DirectX;
+using namespace Camera;
+
+const XMFLOAT4 LIGHT_POSITION{ 1, 2, 1, 0 };
 
 Fbx::Fbx()
 	:vertexCount_(0), polygonCount_(0), materialCount_(0),
@@ -15,6 +15,7 @@ Fbx::Fbx()
 	pMaterialList_(nullptr)
 {
 }
+
 
 HRESULT Fbx::Load(std::string fileName)
 {
@@ -50,7 +51,6 @@ HRESULT Fbx::Load(std::string fileName)
 
 	//カレントディレクトリ変更
 	SetCurrentDirectory(dir);
-
 	InitVertex(mesh);		//頂点バッファ準備
 	InitIndex(mesh);		//インデックスバッファ準備
 	IntConstantBuffer();	//コンスタントバッファ準備
@@ -82,13 +82,13 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 
 			//頂点の位置
 			FbxVector4 pos = mesh->GetControlPointAt(index);
-			vertices[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
+			vertices[index].position = XMVectorSet((float)(pos[0]), (float)pos[1], (float)pos[2], 0.0f);
 
 			//頂点のUV
 			FbxLayerElementUV* pUV = mesh->GetLayer(0)->GetUVs();
 			int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
 			FbxVector2  uv = pUV->GetDirectArray().GetAt(uvIndex);
-			vertices[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
+			vertices[index].uv = XMVectorSet((float)(uv.mData[0]), (float)(1.0 - uv.mData[1]), 0.0f, 0.0f);
 
 			//頂点の法線
 			FbxVector4 Normal;
@@ -114,6 +114,8 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 		MessageBox(NULL, "頂点バッファの作成に失敗しました", "エラー", MB_OK);
 	}
 }
+
+
 
 //インデックスバッファ準備
 void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
@@ -144,7 +146,7 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
 					index[count] = mesh->GetPolygonVertex(poly, vertex);
 					count++;
 				}
-			}	
+			}
 		}
 		indexCount_[i] = count;
 
@@ -172,10 +174,10 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
 void Fbx::IntConstantBuffer()
 {
 	D3D11_BUFFER_DESC cb;
-	cb.ByteWidth = sizeof(CONSTANT_BUFFER);
-	cb.Usage = D3D11_USAGE_DYNAMIC;
+	cb.ByteWidth = sizeof(CBUFF_MODEL);
+	cb.Usage = D3D11_USAGE_DEFAULT;
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cb.CPUAccessFlags = 0;
 	cb.MiscFlags = 0;
 	cb.StructureByteStride = 0;
 
@@ -220,44 +222,50 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			HRESULT hr = pMaterialList_[i].pTexture->Load(name);
 			assert(hr == S_OK);
 		}
-
 		//テクスチャ無し
 		else
 		{
-			XMFLOAT3 RED;
-			RED = { 1.0f,1.0f,0.0f };
 			pMaterialList_[i].pTexture = nullptr;
 			//マテリアルの色
 			FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
 			FbxDouble3  diffuse = pMaterial->Diffuse;
-			//pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
-			pMaterialList_[i].diffuse = XMFLOAT4(RED.x,RED.y,RED.z, 1.0f);
+			pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
 		}
 	}
 }
 
 void Fbx::Draw(Transform& transform)
 {
-	Direct3D::SetShader(SHADER_3D);
+	if (state_ == RENDER_DIRLIGHT)
+		Direct3D::SetShader(SHADER_3D);
+	else
+		Direct3D::SetShader(SHADER_POINT);
+
 	transform.Calclation();//トランスフォームを計算
-	
+
 
 	for (int i = 0; i < materialCount_; i++)
 	{
 		//コンスタントバッファに情報を渡す
-		CONSTANT_BUFFER cb;
+		CBUFF_MODEL cb;
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
+		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
+		//cb.lightPosition = lightSourcePosition_;
+		//XMStoreFloat4(&cb.eyePos,Camera::GetEyePosition());
+		//int n = (int)(pMaterialList_[i].pTexture != nullptr);
+		//cb.isTextured = { n,n,n,n };
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 
-		Direct3D::pContext_->UpdateSubresource(pConstantBuffer_, 0, NULL, &cb, 0, 0);
-	
+
 		//D3D11_MAPPED_SUBRESOURCE pdata;
 		//Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
 		//memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
 
 		//Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
+
+		Direct3D::pContext_->UpdateSubresource(pConstantBuffer_, 0, NULL, &cb, 0, 0);
 
 		//頂点バッファ、インデックスバッファ、コンスタントバッファをパイプラインにセット
 		//頂点バッファ

@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="axisClass.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Direct3D.cpp" />
@@ -185,6 +186,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="axisClass.h" />
     <ClInclude Include="Childoden.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Engine\Camera.h" />

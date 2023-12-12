@@ -8,20 +8,23 @@ SamplerState	g_sampler : register(s0);	//サンプラー
 // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
 //───────────────────────────────────────
-cbuffer global:register(b0)
+cbuffer gmodel:register(b0)
 {
 	float4x4	matWVP;			// ワールド・ビュー・プロジェクションの合成行列
-	float4x4	matW;			//ワールド変換のみ行列
+	float4x4	matW;           // ワールド行列
 	float4x4	matNormal;           // ワールド行列
 	float4		diffuseColor;		//マテリアルの色＝拡散反射係数
 	bool		isTextured;			//テクスチャーが貼られているかどうか
+
 };
 
-cbuffer global :register(b1)
+cbuffer gmodel:register(b1)
 {
 	float4		lightPosition;
 	float4		eyePosition;
-}
+};
+
+
 
 //───────────────────────────────────────
 // 頂点シェーダー出力＆ピクセルシェーダー入力データ構造体
@@ -31,9 +34,8 @@ struct VS_OUT
 	float4 pos  : SV_POSITION;	//位置
 	float2 uv	: TEXCOORD;		//UV座標
 	float4 color	: COLOR;	//色（明るさ）
-	float4 eyev		:POSITION1;
-	float4 normal	:POSITION2;
-	float4 light	:POSITION3;
+	float4 eyev		:POSITION;
+	float4 normal	:NORMAL;
 };
 
 //───────────────────────────────────────
@@ -75,8 +77,8 @@ float4 PS(VS_OUT inData) : SV_Target
 	float4 ambient;
 	float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
 	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))), 8);
-	if (isTextured == false)
+	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))),8);
+	if (isTextured == 0)
 	{
 		diffuse = lightSource * diffuseColor * inData.color;
 		ambient = lightSource * diffuseColor * ambentSource;
@@ -86,10 +88,8 @@ float4 PS(VS_OUT inData) : SV_Target
 		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
 		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
 	}
-	//return g_texture.Sample(g_sampler, inData.uv);// (diffuse + ambient);]
-	//float4 diffuse = lightSource * inData.color;
-	//float4 ambient = lightSource * ambentSource;
-	//float4 output = (diffuse + ambient);
-	//return diffuse + ambient;
 	return diffuse + ambient + specular;
+
+
+	//return g_texture.Sample(g_sampler, inData.uv);
 }

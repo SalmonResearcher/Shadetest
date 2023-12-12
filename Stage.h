@@ -1,26 +1,27 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "Engine/Quad.h"
+
 
 struct CBUFF_STAGESCENE
 {
-    XMFLOAT4    lightPosition;
-    XMFLOAT4    eyePos;
+    XMFLOAT4	lightPosition;
+    XMFLOAT4	eyePos;
 };
-
-class Sprite;
 
 //◆◆◆を管理するクラス
 class Stage : public GameObject
 {
-    int hModel_[5];    //モデル番号
-    Transform Block;
-    Transform Light;
-    int time;
-    Sprite* pSprite = nullptr;
+    int hModel_;    //モデル番号
+    int hGround_;
+    int hLightBall_;
+    Transform trDonuts;
+    Transform trGround;
+    Transform trLightBall;
     ID3D11Buffer* pCBStageScene_;
+    //Quad* q;
     void IntConstantBuffer();
-    XMFLOAT4 lightSourcePosition;
-
+    XMFLOAT4	lightSourcePosition_;
 public:
     //コンストラクタ
     Stage(GameObject* parent);
@@ -40,6 +41,6 @@ public:
     //開放
     void Release() override;
 
-    void SetLightPosition(XMFLOAT4& _pos) { lightSourcePosition = _pos; }
-    XMFLOAT4 GetLightPos() { return lightSourcePosition; }
+    void	SetLightPos(XMFLOAT4& _pos) { lightSourcePosition_ = _pos; }
+    XMFLOAT4 GetLightPos() { return(lightSourcePosition_); }
 };

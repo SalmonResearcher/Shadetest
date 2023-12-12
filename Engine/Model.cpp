@@ -5,6 +5,7 @@ namespace Model {
 
 	//モデルのポインタをぶち込んでおくベクタ
 	std::vector<ModelData*> modelList;
+	RENDER_STATE state_;
 }
 
 int Model::Load(std::string fileName)
@@ -30,7 +31,7 @@ int Model::Load(std::string fileName)
 	}
 
 	modelList.push_back(pData);
-	return( modelList.size() - 1 );
+	return(modelList.size() - 1);
 }
 
 void Model::SetTransform(int hModel, Transform transform)
@@ -38,6 +39,14 @@ void Model::SetTransform(int hModel, Transform transform)
 	modelList[hModel]->transform_ = transform;
 	//モデル番号は、modelListのインデックス
 }
+
+
+
+Fbx* Model::GetModel(int _hModel)
+{
+	return modelList[_hModel]->pfbx_;
+}
+
 void Model::Draw(int hModel) {
 	//モデル番号は、modelListのインデックス
 	modelList[hModel]->pfbx_->Draw(modelList[hModel]->transform_);
@@ -46,7 +55,7 @@ void Model::Draw(int hModel) {
 void Model::Release()
 {
 	bool isReffered = false; //参照されてる？
-	for (int i=0; i < modelList.size(); i++)
+	for (int i = 0; i < modelList.size(); i++)
 	{
 		for (int j = i + 1; j < modelList.size(); j++)
 		{
@@ -64,3 +73,14 @@ void Model::Release()
 	}
 	modelList.clear();
 }
+
+void Model::ToggleRenderState()
+{
+	int n = (int)(Model::state_);
+	Model::state_ = (RENDER_STATE)(++n % 2);
+	for (auto& theI : modelList)
+	{
+		theI->pfbx_->SetRenderingShader(Model::state_);
+	}
+}
+

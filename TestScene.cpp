@@ -12,7 +12,6 @@ TestScene::TestScene(GameObject* parent)
 void TestScene::Initialize()
 {
 	Instantiate<Stage>(this);
-	Instantiate<Controller>(this);
 }
 
 void TestScene::Update()
