@@ -5,7 +5,7 @@
 #include "Engine/Camera.h"
 
 namespace {
-    const XMFLOAT4 DEF_LIGHT_POS;
+    const XMFLOAT4 DEF_LIGHT_POS {0,1,2,0};
 }
 
 //コンストラクタ
@@ -66,7 +66,6 @@ void Stage::Initialize()
     pSprite = new Sprite;
     pSprite->Initialize();  
     IntConstantBuffer();
-
 }
 float speed = 1;
 //更新
@@ -88,7 +87,7 @@ void Stage::Update()
    // XMFLOAT4 margin{ p.x - 0.0f,p.y - 0.0f,p.z - 0.1f,p. };
     if (Input::IsKey(DIK_W))
     {
-        XMFLOAT4 p = {0.0f,2.0f,-1.5f,0};
+        XMFLOAT4 p = GetLightPos();
         XMFLOAT4 margin{ p.x - 0.0f,p.y - 0.0f,p.z + 0.1f,p.w -0.0};
 
         SetLightPosition(margin);
@@ -96,7 +95,7 @@ void Stage::Update()
 
     if (Input::IsKey(DIK_A))
     {
-        XMFLOAT4 p = { 0.0f,2.0f,-1.5f,0 };
+        XMFLOAT4 p = GetLightPos();
         XMFLOAT4 margin{ p.x - 0.1f,p.y - 0.0f,p.z - 0.0f,p.w - 0.0 };
 
         SetLightPosition(margin);
@@ -104,7 +103,7 @@ void Stage::Update()
 
     if (Input::IsKey(DIK_S))
     {
-        XMFLOAT4 p = { 0.0f,2.0f,-1.5f,0 };
+        XMFLOAT4 p = GetLightPos();
         XMFLOAT4 margin{ p.x - 0.0f,p.y - 0.0f,p.z - 0.1f,p.w - 0.0 };
 
         SetLightPosition(margin);
@@ -112,7 +111,7 @@ void Stage::Update()
 
     if (Input::IsKey(DIK_D))
     {
-        XMFLOAT4 p = { 0.0f,2.0f,-1.5f,0 };
+        XMFLOAT4 p = GetLightPos();
         XMFLOAT4 margin{ p.x + 0.1f,p.y - 0.0f,p.z - 0.0f,p.w - 0.0 };
 
         SetLightPosition(margin);

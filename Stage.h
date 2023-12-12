@@ -41,5 +41,5 @@ public:
     void Release() override;
 
     void SetLightPosition(XMFLOAT4& _pos) { lightSourcePosition = _pos; }
-    XMFLOAT4 GetLightPos() { return CBUFF_STAGESCENE::lightPosition; }
+    XMFLOAT4 GetLightPos() { return lightSourcePosition; }
 };

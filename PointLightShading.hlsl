@@ -14,8 +14,6 @@ cbuffer global:register(b0)
 	float4x4	matW;			//ワールド変換のみ行列
 	float4x4	matNormal;           // ワールド行列
 	float4		diffuseColor;		//マテリアルの色＝拡散反射係数
-	float4		lightDirection;		//Fbxより取得したのポリゴンの色
-	vector		eyePos;				//カメラの向いている方向
 	bool		isTextured;			//テクスチャーが貼られているかどうか
 };
 
@@ -28,11 +26,10 @@ cbuffer global :register(b1)
 //───────────────────────────────────────
 // 頂点シェーダー出力＆ピクセルシェーダー入力データ構造体
 //───────────────────────────────────────
-struct VS_OUT
+struct PS_IN
 {
 	float4 pos  : SV_POSITION;	//位置
 	float2 uv	: TEXCOORD;		//UV座標
-	float4 color	: COLOR;	//色（明るさ）
 	float4 eyev		:POSITION1;
 	float4 normal	:POSITION2;
 	float4 light	:POSITION3;
@@ -41,7 +38,7 @@ struct VS_OUT
 //───────────────────────────────────────
 // 頂点シェーダ
 //───────────────────────────────────────
-VS_OUT VS(float4 pos : POSITION, float2 uv : TEXCOORD, float4 normal : NORMAL)
+PS_IN VS(float4 pos : POSITION, float2 uv : TEXCOORD, float4 normal : NORMAL)
 {
 	//ピクセルシェーダーへ渡す情報
 	VS_OUT outData = (VS_OUT)0;
@@ -51,15 +48,13 @@ VS_OUT VS(float4 pos : POSITION, float2 uv : TEXCOORD, float4 normal : NORMAL)
 	outData.pos = mul(pos, matWVP);
 	outData.uv = uv;
 	normal.w = 0;
-	normal = mul(normal, matNormal);
-	normal = normalize(normal);
-	outData.normal = normal;
+	float4 normalout = mul(normal, matNormal);
+	normalout.w = 0;
+	normalout = normalize(normalout);
+	outData.normal = normalout;
 
-	float4 light = normalize(lightPosition);
-	light = normalize(light);
-
-	outData.color = saturate(dot(normal, light));
 	float4 posw = mul(pos, matW);
+	outData.light = normalize(lightPosition - posw)
 	outData.eyev = eyePosition - posw;
 
 	//まとめて出力
