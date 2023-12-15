@@ -35,7 +35,7 @@ struct PS_IN
 //───────────────────────────────────────
 // 頂点シェーダ
 //───────────────────────────────────────
-PS_IN VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
+PS_IN VS(float4 pos : POSITION, float2 uv : TEXCOORD, float4 normal : NORMAL)
 {
 	//ピクセルシェーダーへ渡す情報
 	PS_IN outData = (PS_IN)0;
