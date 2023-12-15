@@ -23,4 +23,3 @@ namespace Model
 	void ToggleRenderState();
 }
 
-

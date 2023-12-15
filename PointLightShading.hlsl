@@ -63,13 +63,13 @@ float4 PS(PS_IN inData) : SV_Target
 {
 
 	float len = length(inData.light); // 光の方向ベクトルを正規化(大きさを 1 にし
-
+					
 	float NL = saturate(dot(inData.normal, inData.light));
 	float k = 1.0f / (1.0 * len * len);
 
 	float3 reflect = normalize(2 * NL * inData.normal - inData.light);
 	float4 specular = pow(saturate(dot(reflect, inData.eyev)), 8);
-
+	
 
 	float4 lightSource = { 1,1,1,1 };//光の色
 	float4 ambientSource = { 1,1,1,1 };//環境光の色
@@ -79,12 +79,12 @@ float4 PS(PS_IN inData) : SV_Target
 	float4 ambient;
 	if (isTextured.x == false)
 	{
-		diffuse = k * NL * lightSource * diffuseColor;
+		diffuse = k*NL*lightSource * diffuseColor;
 		ambient = ambTerm * ambientSource * diffuseColor;
 	}
 	else
 	{
-		diffuse = k * NL * lightSource * g_texture.Sample(g_sampler, inData.uv);
+		diffuse = k*NL*lightSource * g_texture.Sample(g_sampler, inData.uv);
 		ambient = ambTerm * ambientSource * g_texture.Sample(g_sampler, inData.uv);
 	}
 

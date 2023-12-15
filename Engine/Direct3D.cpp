@@ -160,8 +160,13 @@ HRESULT Direct3D::InitShader()
 	{
 		return E_FAIL;
 	}
-
+	if (FAILED(InitShaderPointLight()))
+	{
+		return E_FAIL;
+	}
 	return S_OK;
+
+
 }
 
 HRESULT Direct3D::InitShader3D()
@@ -222,6 +227,8 @@ HRESULT Direct3D::InitShader3D()
 	rdc.CullMode = D3D11_CULL_BACK;
 	rdc.FillMode = D3D11_FILL_SOLID;
 	rdc.FrontCounterClockwise = FALSE;
+	rdc.ScissorEnable = false;
+	rdc.MultisampleEnable = false;
 	hr = pDevice_->CreateRasterizerState(&rdc, &(shaderBundle[SHADER_3D].pRasterizerState_));
 	if (FAILED(hr))
 	{
@@ -290,6 +297,8 @@ HRESULT Direct3D::InitShader2D()
 	rdc.CullMode = D3D11_CULL_BACK;
 	rdc.FillMode = D3D11_FILL_SOLID;
 	rdc.FrontCounterClockwise = FALSE;
+	//rdc.ScissorEnable = false;
+	//rdc.MultisampleEnable = false;
 	hr = pDevice_->CreateRasterizerState(&rdc, &(shaderBundle[SHADER_2D].pRasterizerState_));
 	if (FAILED(hr))
 	{
@@ -297,6 +306,7 @@ HRESULT Direct3D::InitShader2D()
 		MessageBox(NULL, "ラスタライザの作成に失敗しました", "エラー", MB_OK);
 		return hr;
 	}
+
 
 	return S_OK;
 }
@@ -372,6 +382,7 @@ HRESULT Direct3D::InitShaderPointLight()
 	return S_OK;
 }
 
+
 void Direct3D::SetShader(SHADER_TYPE type)
 {
 	//それぞれをデバイスコンテキストにセット
@@ -385,7 +396,8 @@ void Direct3D::SetShader(SHADER_TYPE type)
 void Direct3D::BeginDraw()
 {
 	//背景の色
-	float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
+	//float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
+	float clearColor[4] = { 0.7f, 0.6f, 0.3f, 1.0f };//R,G,B,A
 
 	//画面をクリア
 	pContext_->ClearRenderTargetView(pRenderTargetView_, clearColor);
@@ -394,12 +406,17 @@ void Direct3D::BeginDraw()
 	pContext_->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
+
+
 //描画終了
+
 void Direct3D::EndDraw()
 {
 	//スワップ（バックバッファを表に表示する）
 	pSwapChain_->Present(0, 0);
 }
+
+
 
 //解放処理
 void Direct3D::Release()

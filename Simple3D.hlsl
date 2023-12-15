@@ -51,7 +51,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	outData.pos = mul(pos, matWVP);
 	outData.uv = uv;
 	normal.w = 0;
-	normal = mul(normal, matNormal);
+	normal = mul(normal , matNormal);
 	normal = normalize(normal);
 	outData.normal = normal;
 
@@ -90,6 +90,6 @@ float4 PS(VS_OUT inData) : SV_Target
 	}
 	return diffuse + ambient + specular;
 
-
+	
 	//return g_texture.Sample(g_sampler, inData.uv);
 }

@@ -35,6 +35,7 @@ namespace Direct3D
 	HRESULT InitShader2D();
 	HRESULT InitShaderPointLight();
 
+
 	void SetShader(SHADER_TYPE type);
 
 	//•`‰æŠJŽn

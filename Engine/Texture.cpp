@@ -29,6 +29,7 @@ HRESULT Texture::Load(string filename)
 	ScratchImage image;
 	HRESULT hr;
 	hr = LoadFromWICFile(wtext, WIC_FLAGS::WIC_FLAGS_NONE, &metadata, image);
+	imgSize_ = XMFLOAT2{ (float)image.GetImages()->width, (float)image.GetImages()->height };
 	/////////
 	if (FAILED(hr))
 	{
@@ -37,7 +38,7 @@ HRESULT Texture::Load(string filename)
 	//ÉTÉìÉvÉâÅ[ÇÃçÏê¨
 	D3D11_SAMPLER_DESC  SamDesc;
 	ZeroMemory(&SamDesc, sizeof(D3D11_SAMPLER_DESC));
-	SamDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	SamDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	SamDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	SamDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -59,9 +60,10 @@ HRESULT Texture::Load(string filename)
 	{
 		return S_FALSE;
 	}
-
     return S_OK;
 }
+
+
 
 void Texture::Release()
 {
