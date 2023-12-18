@@ -15,7 +15,7 @@ axisClass::~axisClass()
 void axisClass::Initialize()
 {
     hModel_ = Model::Load("Assets/Arrow.fbx");
-    assert(hModel_ >= 0);//ƒ‚ƒfƒ‹”Ô†‚ª-1‚Ì‚Ü‚Ü‚¾‚Á‚½‚ç‚ ‚³[‚Æ‚Éˆø‚Á‚©‚©‚é
+    assert(hModel_ >= 0);       //ƒ‚ƒfƒ‹”Ô†‚ª-1(‚È‚µ)‚¾‚Á‚½‚çassert‚Éˆø‚Á‚©‚©‚é
 
     //transform_.scale_.x = 0.1f;
     //transform_.scale_.y = 0.1f;
