@@ -91,6 +91,8 @@ float4 PS(VS_OUT inData) : SV_Target
 	//return diffuse + ambient + specular;
 	float4 comic;
 
+	//ステップ関数　ある値からある値以上の数だった時に、1を返します。
+
 	if (diffuse.w < 0.33)
 	{
 		comic = ( 0,0,0,0 );
