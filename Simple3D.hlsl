@@ -72,7 +72,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 float4 PS(VS_OUT inData) : SV_Target
 {
 	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambentSource = float4(0.2, 0.2, 0.2, 1.0);
+	float4 ambentSource = float4(0.2,0.2,0.2, 1.0);
 	float4 diffuse;
 	float4 ambient;
 	float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
@@ -88,8 +88,30 @@ float4 PS(VS_OUT inData) : SV_Target
 		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
 		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
 	}
-	return diffuse + ambient + specular;
+	//return diffuse + ambient + specular;
+	float4 comic;
 
-	
-	//return g_texture.Sample(g_sampler, inData.uv);
+	if (diffuse.w < 0.33)
+	{
+		comic = ( 0,0,0,0 );
+		diffuse = comic;
+	}
+
+	else if (diffuse.w < 0.66)
+	{
+		comic = (0.5, 0.5, 0.5, 0.5);
+		diffuse = comic;
+	}
+
+	else if (diffuse.w < 1.0)
+	{
+		comic = (1.0, 1.0, 1.0, 1.0);
+		diffuse = comic;
+	}
+
+
+
+	return diffuse+ ambient;
+	//return ambient;
+	//return specular;
 }
