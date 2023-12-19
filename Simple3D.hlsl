@@ -74,12 +74,12 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 float4 PS(VS_OUT inData) : SV_Target
 {
 	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambentSource = float4(0.5,0.5,0.5, 1.0);
+	float4 ambentSource = float4(0.1,0.1,0.1, 1.0);
 	float4 diffuse;
 	float4 ambient;
 	float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
 	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))),8);
+	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))),10);
 	if (isTextured == 0)
 	{
 		diffuse = lightSource * diffuseColor * inData.color;
@@ -98,7 +98,7 @@ float4 PS(VS_OUT inData) : SV_Target
 	n3 = float4(3 / 3.0, 3 / 3.0, 3 / 3.0, 3 / 3.0);
 
 	//ステップ関数　ある値からある値以上の数だった時に、1を返します。
-	comic = 0.1 * step(n1, inData.color) + 0.2 * step(n2, inData.color) + 0.3 * step(n3, inData.color);
+	comic = 0.1 * step(n1, inData.color) + 0.4 * step(n2, inData.color) + 0.8 * step(n3, inData.color);
 
 	//float2 uv;
 	//uv.x = 1.0;//N、Lの値にすると
@@ -106,27 +106,8 @@ float4 PS(VS_OUT inData) : SV_Target
 	//return g_toon_texture.Sample(g_sampler.uv);
 	
 
-	/*if (diffuse.w < 0.33)
-	{
-		comic = ( 0,0,0,0 );
-		diffuse = comic;
-	}
 
-	else if (diffuse.w < 0.66)
-	{
-		comic = (0.5, 0.5, 0.5, 0.5);
-		diffuse = comic;
-	}
-
-	else if (diffuse.w < 1.0)
-	{
-		comic = (1.0, 1.0, 1.0, 1.0);
-		diffuse = comic;
-	}*/
-
-
-
-	return comic + ambient;
+	return diffuse + ambient + specular;
 	//return ambient;
 	//return specular;
 }

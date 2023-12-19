@@ -5,6 +5,8 @@ namespace Model {
 
 	//モデルのポインタをぶち込んでおくベクタ
 	std::vector<ModelData*> modelList;
+
+	//シェーダーの状態
 	RENDER_STATE state_;
 }
 
@@ -74,6 +76,7 @@ void Model::Release()
 	modelList.clear();
 }
 
+//シェーダーのタイプを変える
 void Model::ToggleRenderState()
 {
 	int n = (int)(Model::state_);

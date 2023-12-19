@@ -317,11 +317,12 @@ HRESULT Direct3D::InitShaderPointLight()
 	HRESULT hr;
 	// 頂点シェーダの作成（コンパイル）
 	ID3DBlob* pCompileVS = nullptr;
-	D3DCompileFromFile(L"PointLightShading.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-	assert(pCompileVS != nullptr); //ここはassertionで処理
 
-	hr = pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
-		NULL, &(shaderBundle[SHADER_POINT].pVertexShader_));
+	//PointLightのHLSLを追加するとmainのエントリポイントがないとかいわれるんですけど、ファイルの読み込みはOKなんですか...
+	D3DCompileFromFile(L"PointLightShading.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+	assert(pCompileVS != nullptr);
+
+	hr = pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &(shaderBundle[SHADER_POINT].pVertexShader_));
 	if (FAILED(hr))
 	{
 		//エラー処理

@@ -63,7 +63,7 @@ void Stage::Initialize()
 
     trLightBall.position_ = { 0, 0, 0 };
     trLightBall.rotate_ = { 0, 0, 0 };
-    trLightBall.scale_ = { 0.4, 0.4, 0.4 };
+    trLightBall.scale_ = { 0.8, 0.8, 0.8 };
     Instantiate<axisClass>(this);
     IntConstantBuffer();
 }
@@ -71,14 +71,14 @@ void Stage::Initialize()
 //更新
 void Stage::Update()
 {
-
+    //平行源→点光源に変更
     if (Input::IsKeyUp(DIK_SPACE))
     {
         Model::ToggleRenderState();
     }
-    //transform_.rotate_.y += 0.5f;
-    // trDonuts.rotate_.y += 0.5f;
-    if (Input::IsKey(DIK_RIGHT))
+
+    //赤い丸（ライト位置）変更
+    if (Input::IsKey(DIK_D))
     {
         XMFLOAT4 p = GetLightPos();
         XMFLOAT4 margin{ p.x + 0.1f, p.y + 0.0f, p.z + 0.0f, p.w + 0.0f };
@@ -86,7 +86,7 @@ void Stage::Update()
         //Model::GetModel(hModel_)->SetLightPos(margin);
         SetLightPos(margin);
     }
-    if (Input::IsKey(DIK_LEFT))
+    if (Input::IsKey(DIK_A))
     {
         XMFLOAT4 p = GetLightPos();
         XMFLOAT4 margin{ p.x - 0.1f, p.y - 0.0f, p.z - 0.0f, p.w - 0.0f };
@@ -94,7 +94,7 @@ void Stage::Update()
         /// Model::GetModel(hModel_)->SetLightPos(margin);
         SetLightPos(margin);
     }
-    if (Input::IsKey(DIK_UP))
+    if (Input::IsKey(DIK_W))
     {
         XMFLOAT4 p = GetLightPos();
         XMFLOAT4 margin{ p.x - 0.0f, p.y + 0.1f, p.z - 0.0f, p.w - 0.0f };
@@ -102,7 +102,7 @@ void Stage::Update()
         //Model::GetModel(hModel_)->SetLightPos(margin);
         SetLightPos(margin);
     }
-    if (Input::IsKey(DIK_DOWN))
+    if (Input::IsKey(DIK_S))
     {
         XMFLOAT4 p = GetLightPos();
         XMFLOAT4 margin{ p.x - 0.0f, p.y - 0.1f, p.z - 0.0f, p.w - 0.0f };
@@ -110,7 +110,7 @@ void Stage::Update()
         //Model::GetModel(hModel_)->SetLightPos(margin);
         SetLightPos(margin);
     }
-    if (Input::IsKey(DIK_W))
+    if (Input::IsKey(DIK_UP))
     {
         XMFLOAT4 p = GetLightPos();
         XMFLOAT4 margin{ p.x - 0.0f, p.y - 0.0f, p.z + 0.1f, p.w + 0.0f };
@@ -118,7 +118,10 @@ void Stage::Update()
         //Model::GetModel(hModel_)->SetLightPos(margin);
         SetLightPos(margin);
     }
-    if (Input::IsKey(DIK_S))
+
+    //私はWASD移動、↑↓で奥行きのほうが好き
+    
+    if (Input::IsKey(DIK_DOWN))
     {
         XMFLOAT4 p = GetLightPos();
         XMFLOAT4 margin{ p.x - 0.0f, p.y - 0.0f, p.z - 0.1f, p.w - 0.0f };
@@ -126,6 +129,7 @@ void Stage::Update()
         //Model::GetModel(hModel_)->SetLightPos(margin);
         SetLightPos(margin);
     }
+    
     XMFLOAT4 tmp{ GetLightPos() };
     trLightBall.position_ = { tmp.x, tmp.y,tmp.z };
 
@@ -146,8 +150,6 @@ void Stage::Draw()
     //q->Draw(transform_);
     Model::SetTransform(hModel_, trDonuts);
     Model::Draw(hModel_);
-    //Model::SetTransform(hGround_, trGround);
-    //Model::Draw(hGround_);
     Model::SetTransform(hLightBall_, trLightBall);
     Model::Draw(hLightBall_);
 }
