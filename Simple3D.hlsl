@@ -4,6 +4,8 @@
 Texture2D		g_texture : register(t0);	//テクスチャー
 SamplerState	g_sampler : register(s0);	//サンプラー
 
+Texture2D		g_toon_texture : register(t1);
+
 //───────────────────────────────────────
 // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
@@ -72,7 +74,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 float4 PS(VS_OUT inData) : SV_Target
 {
 	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambentSource = float4(0.2,0.2,0.2, 1.0);
+	float4 ambentSource = float4(0.5,0.5,0.5, 1.0);
 	float4 diffuse;
 	float4 ambient;
 	float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
@@ -90,10 +92,21 @@ float4 PS(VS_OUT inData) : SV_Target
 	}
 	//return diffuse + ambient + specular;
 	float4 comic;
+	float4 n1, n2, n3 ;
+	n1 = float4(1 / 3.0, 1 / 3.0, 1 / 3.0, 1 / 3.0);
+	n2 = float4(2 / 3.0, 2 / 3.0, 2 / 3.0, 2 / 3.0);
+	n3 = float4(3 / 3.0, 3 / 3.0, 3 / 3.0, 3 / 3.0);
 
 	//ステップ関数　ある値からある値以上の数だった時に、1を返します。
+	comic = 0.1 * step(n1, inData.color) + 0.2 * step(n2, inData.color) + 0.3 * step(n3, inData.color);
 
-	if (diffuse.w < 0.33)
+	float2 uv;
+	uv.x = 1.0;//N、Lの値にすると
+	uv.y = 0;
+	return g_toon_texture.Sample(g_sampler.uv);
+	
+
+	/*if (diffuse.w < 0.33)
 	{
 		comic = ( 0,0,0,0 );
 		diffuse = comic;
@@ -109,11 +122,11 @@ float4 PS(VS_OUT inData) : SV_Target
 	{
 		comic = (1.0, 1.0, 1.0, 1.0);
 		diffuse = comic;
-	}
+	}*/
 
 
 
-	return diffuse+ ambient;
+	return comic + ambient;
 	//return ambient;
 	//return specular;
 }
