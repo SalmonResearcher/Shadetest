@@ -71,6 +71,9 @@ void Stage::Initialize()
 //更新
 void Stage::Update()
 {
+    trDonuts.rotate_.y += 0.1f;
+    
+    
     //平行源→点光源に変更
     if (Input::IsKeyUp(DIK_SPACE))
     {
