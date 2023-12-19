@@ -100,10 +100,10 @@ float4 PS(VS_OUT inData) : SV_Target
 	//ステップ関数　ある値からある値以上の数だった時に、1を返します。
 	comic = 0.1 * step(n1, inData.color) + 0.2 * step(n2, inData.color) + 0.3 * step(n3, inData.color);
 
-	float2 uv;
-	uv.x = 1.0;//N、Lの値にすると
-	uv.y = 0;
-	return g_toon_texture.Sample(g_sampler.uv);
+	//float2 uv;
+	//uv.x = 1.0;//N、Lの値にすると
+	//uv.y = 0;
+	//return g_toon_texture.Sample(g_sampler.uv);
 	
 
 	/*if (diffuse.w < 0.33)
