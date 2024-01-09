@@ -71,6 +71,7 @@ void Stage::Initialize()
 //çXêV
 void Stage::Update()
 {
+    trDonuts.rotate_.y += 0.5;
 
     if (Input::IsKeyUp(DIK_SPACE))
     {
