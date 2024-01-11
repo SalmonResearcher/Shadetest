@@ -16,6 +16,9 @@ cbuffer gmodel:register(b0)
 	float4x4	matW;           // ワールド行列
 	float4x4	matNormal;           // ワールド行列
 	float4		diffuseColor;		//マテリアルの色＝拡散反射係数
+	float4		ambientColor;
+	float4		specularColor;
+	float		shininess;
 	bool		isTextured;			//テクスチャーが貼られているかどうか
 
 };
@@ -77,16 +80,18 @@ float4 PS(VS_OUT inData) : SV_Target
 	float4 ambentSource = float4(0.2,0.2,0.2, 1.0);
 	float4 diffuse;
 	float4 ambient;
+
 	float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
-	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))),8);
+	float4 reflection = reflect(normalize(-lightPosition), inData.normal);
+
+	float4 specular = pow(saturate(dot(reflection, normalize(inData.eyev))),shininess)*specularColor;
 
 	float2 uv;
 
-	float4 tI = g_toon_texture.Sample(g_sampler, uv);
-
 	uv.x = inData.color.x;
 	uv.y = 0;
+
+	float4 tI = g_toon_texture.Sample(g_sampler, uv);
 
 	if (isTextured == 0)
 	{

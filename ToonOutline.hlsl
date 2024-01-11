@@ -41,29 +41,19 @@ struct VS_OUT
 //───────────────────────────────────────
 // 頂点シェーダ
 //───────────────────────────────────────
-VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
+float4 VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL) :SV_POSITION
 {
 	//ピクセルシェーダーへ渡す情報
-	VS_OUT outData = (VS_OUT)0;
+	//VS_OUT outData = (VS_OUT)0;
 
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
-	outData.pos = mul(pos, matWVP);
-	outData.uv = uv;
 	normal.w = 0;
-	normal = mul(normal, matNormal);
-	normal = normalize(normal);
-	outData.normal = normal;
+	pos = pos + normal * 0.05;
 
-	float4 light = normalize(lightPosition);
-	light = normalize(light);
+	pos = mul(pos, matWVP);
 
-	outData.color = saturate(dot(normal, light));
-	float4 posw = mul(pos, matW);
-	outData.eyev = eyePosition - posw;
-
-	//まとめて出力
-	return outData;
+	return pos;
 }
 
 //───────────────────────────────────────
@@ -71,49 +61,6 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambentSource = float4(0.2,0.2,0.2, 1.0);
-	float4 diffuse;
-	float4 ambient;
-	float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
-	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))),8);
-	if (isTextured == 0)
-	{
-		diffuse = lightSource * diffuseColor * inData.color;
-		ambient = lightSource * diffuseColor * ambentSource;
-	}
-	else
-	{
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
-	}
-	//return diffuse + ambient + specular;
-	float4 comic;
-
-	//ステップ関数　ある値からある値以上の数だった時に、1を返します。
-
-	if (diffuse.w < 0.33)
-	{
-		comic = (0,0,0,0);
-		diffuse = comic;
-	}
-
-	else if (diffuse.w < 0.66)
-	{
-		comic = (0.5, 0.5, 0.5, 0.5);
-		diffuse = comic;
-	}
-
-	else if (diffuse.w < 1.0)
-	{
-		comic = (1.0, 1.0, 1.0, 1.0);
-		diffuse = comic;
-	}
-
-
-
-	return diffuse + ambient;
-	//return ambient;
-	//return specular;
+	return float4(0,0,0,1);
+//return g_texture.Sample(g_sampler, inData.uv);
 }

@@ -238,10 +238,7 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 
 void Fbx::Draw(Transform& transform)
 {
-	if (state_ == RENDER_DIRLIGHT)
-		Direct3D::SetShader(SHADER_TOON);
-	else
-		Direct3D::SetShader(SHADER_POINT);
+		Direct3D::SetShader(SHADER_TOONOUT);
 
 	transform.Calclation();//トランスフォームを計算
 
@@ -254,6 +251,9 @@ void Fbx::Draw(Transform& transform)
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
+		cb.ambientColor = pMaterialList_[i].ambiemt;
+		cb.specularColor = pMaterialList_[i].specular;
+		cb.shininess = pMaterialList_[i].shininess;
 		//cb.lightPosition = lightSourcePosition_;
 		//XMStoreFloat4(&cb.eyePos,Camera::GetEyePosition());
 		//int n = (int)(pMaterialList_[i].pTexture != nullptr);
@@ -301,6 +301,8 @@ void Fbx::Draw(Transform& transform)
 		//描画
 		Direct3D::pContext_->DrawIndexed(indexCount_[i], 0, 0);
 	}
+	Direct3D::SetShader(SHADER_TOON);
+
 }
 
 void Fbx::Release()
