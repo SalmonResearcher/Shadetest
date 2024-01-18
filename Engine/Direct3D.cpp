@@ -242,6 +242,8 @@ HRESULT Direct3D::InitShader3D()
 	rdc.CullMode = D3D11_CULL_BACK;
 	rdc.FillMode = D3D11_FILL_SOLID;
 	rdc.FrontCounterClockwise = FALSE;
+	rdc.ScissorEnable = false;
+	rdc.MultisampleEnable = false;
 	hr = pDevice_->CreateRasterizerState(&rdc, &(shaderBundle[SHADER_3D].pRasterizerState_));
 	if (FAILED(hr))
 	{
@@ -549,7 +551,7 @@ HRESULT Direct3D::InitNormalMap()
 	assert(pCompileVS != nullptr); //ここはassertionで処理
 
 	hr = pDevice_->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
-		NULL, &(shaderBundle[SHADER_3D].pVertexShader_));
+		NULL, &(shaderBundle[SHADER_NORMALMAP].pVertexShader_));
 	if (FAILED(hr))
 	{
 		//エラー処理
@@ -560,12 +562,13 @@ HRESULT Direct3D::InitNormalMap()
 
 	//頂点インプットレイアウト
 	D3D11_INPUT_ELEMENT_DESC layout[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },	//位置
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UV座標
-		{ "NORMAL",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 },//法線
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, sizeof(DirectX::XMVECTOR) * 0 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 },	//位置
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		0, sizeof(DirectX::XMVECTOR) * 1 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 },	//UV座標
+		{ "NORMAL",	  0, DXGI_FORMAT_R32G32B32_FLOAT,	0, sizeof(DirectX::XMVECTOR) * 2 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 },	//法線
+		{ "TANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT,	0, sizeof(DirectX::XMVECTOR) * 3 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 }	//法線
 	};
-	hr = pDevice_->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
-		&(shaderBundle[SHADER_3D].pVertexLayout_));
+	hr = pDevice_->CreateInputLayout(layout, ARRAYSIZE(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
+		&(shaderBundle[SHADER_NORMALMAP].pVertexLayout_));
 	if (FAILED(hr))
 	{
 		//エラー処理
@@ -597,7 +600,9 @@ HRESULT Direct3D::InitNormalMap()
 	rdc.CullMode = D3D11_CULL_BACK;
 	rdc.FillMode = D3D11_FILL_SOLID;
 	rdc.FrontCounterClockwise = FALSE;
-	hr = pDevice_->CreateRasterizerState(&rdc, &(shaderBundle[SHADER_3D].pRasterizerState_));
+	rdc.ScissorEnable = false;
+	rdc.MultisampleEnable = false;
+	hr = pDevice_->CreateRasterizerState(&rdc, &(shaderBundle[SHADER_NORMALMAP].pRasterizerState_));
 	if (FAILED(hr))
 	{
 		//エラー処理
