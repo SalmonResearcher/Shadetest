@@ -16,11 +16,10 @@ cbuffer gmodel:register(b0)
 	float4x4	matW;           // ワールド行列
 	float4x4	matNormal;           // ワールド行列
 	float4		diffuseColor;		//マテリアルの色＝拡散反射係数
-	float4		ambientColor;
-	float4		specularColor;
+	float4		ambientColor;		//環境光
+	float4		specularColor;		//鏡面反射＝ハイライト
 	float		shininess;
 	bool		isTextured;			//テクスチャーが貼られているかどうか
-
 };
 
 cbuffer gmodel:register(b1)
@@ -28,8 +27,6 @@ cbuffer gmodel:register(b1)
 	float4		lightPosition;
 	float4		eyePosition;
 };
-
-
 
 //───────────────────────────────────────
 // 頂点シェーダー出力＆ピクセルシェーダー入力データ構造体
@@ -54,6 +51,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
 	outData.pos = mul(pos, matWVP);
+
 	outData.uv = uv;
 	normal.w = 0;
 	normal = mul(normal, matNormal);
@@ -62,47 +60,49 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 
 	float4 light = normalize(lightPosition);
 	light = normalize(light);
-
 	outData.color = saturate(dot(normal, light));
+
 	float4 posw = mul(pos, matW);
 	outData.eyev = eyePosition - posw;
 
 	//まとめて出力
 	return outData;
 }
-
 //───────────────────────────────────────
 // ピクセルシェーダ
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
 	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambentSource = float4(0.2,0.2,0.2, 1.0);
 	float4 diffuse;
 	float4 ambient;
-
 	float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
-	float4 reflection = reflect(normalize(-lightPosition), inData.normal);
 
-	float4 specular = pow(saturate(dot(reflection, normalize(inData.eyev))),shininess)*specularColor;
+	//float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
+	float4 reflection = reflect(normalize(-lightPosition), inData.normal);
+	float4 specular = pow(saturate(dot(reflection, normalize(inData.eyev))), shininess) * specularColor;
 
 	float2 uv;
-
 	uv.x = inData.color.x;
 	uv.y = 0;
 
 	float4 tI = g_toon_texture.Sample(g_sampler, uv);
-
 	if (isTextured == 0)
 	{
 		diffuse = lightSource * diffuseColor * tI;
-		ambient = lightSource * diffuseColor * ambentSource;
+		ambient = lightSource * diffuseColor * ambientColor;
 	}
+
 	else
 	{
 		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * tI;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
+		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
 	}
-
-	return diffuse + ambient + specular;;
+	////return diffuse + ambient + specular;
+	//float NV = dot(inData.normal, normalize(inData.eyev));
+	//if (abs(NV) < 0.3)
+	//	return float4(0, 0, 0, 0);
+	//else
+	return diffuse + ambient + specular;
+	//return g_texture.Sample(g_sampler, inData.uv);
 }
