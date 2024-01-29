@@ -60,8 +60,6 @@ HRESULT Fbx::Load(std::string fileName)
 
 	//マネージャ解放
 	pFbxManager->Destroy();
-	pToonTex_ = new Texture;
-	pToonTex_->Load("Assets\\toon2.png");
 	return S_OK;
 }
 
@@ -97,6 +95,12 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 		}
 	}
 
+	FbxGeometryElementTangent* t = mesh->GetElementTangent(0);
+	//タンジェント取得
+	for (int i = 0, i < polygonCount_; i++)
+	{
+
+	}
 	//頂点バッファ
 	HRESULT hr;
 	D3D11_BUFFER_DESC bd_vertex;
